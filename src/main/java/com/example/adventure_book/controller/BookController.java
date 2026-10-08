@@ -3,6 +3,7 @@ package com.example.adventure_book.controller;
 import com.example.adventure_book.dto.request.BookRequest;
 import com.example.adventure_book.dto.response.BookResponse;
 import com.example.adventure_book.service.BookService;
+import com.example.adventure_book.type.Difficulty;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +30,15 @@ public class BookController {
         return bookService.getAllBooks();
     }
 
-    @PostMapping("")
+    @GetMapping("by-example")
+    public List<BookResponse> getBooks(@RequestParam(required = false) String title,
+                                       @RequestParam(required = false) String author,
+                                       @RequestParam(required = false) String category,
+                                       @RequestParam(required = false) Difficulty difficulty) {
+        return bookService.getBooks(title, author, category, difficulty);
+    }
+
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookResponse createBook(@Valid @RequestBody BookRequest bookRequest) {
         return bookService.createBook(bookRequest);

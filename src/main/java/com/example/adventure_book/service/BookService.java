@@ -11,8 +11,11 @@ import com.example.adventure_book.exception.BookNotFoundException;
 import com.example.adventure_book.mapper.BookMapper;
 import com.example.adventure_book.mapper.SectionMapper;
 import com.example.adventure_book.repository.BookRepository;
+import com.example.adventure_book.type.Difficulty;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,19 +30,6 @@ public class BookService {
     private final BookRepository bookRepository;
 
     private final CategoryService categoryService;
-
-    private static void addOptions(Book book, BookRequest request) {
-        Map<Integer, Section> sectionsByNumber = book.getSections().stream()
-                .collect(Collectors.toMap(Section::getSectionNumber, Function.identity()));
-
-        for (SectionRequest sr : request.sections()) {
-            if (sr.options() == null) continue;
-            Section section = sectionsByNumber.get(sr.id());
-            for (OptionRequest or : sr.options()) {
-                section.addOption(SectionMapper.toEntity(or, sectionsByNumber.get(or.gotoId())));
-            }
-        }
-    }
 
     @Transactional
     public List<BookResponse> getAllBooks() {
@@ -58,6 +48,39 @@ public class BookService {
         return BookMapper.toResponse(bookRepository.save(book));
     }
 
+    private static void addOptions(Book book, BookRequest request) {
+        Map<Integer, Section> sectionsByNumber = book.getSections().stream()
+                .collect(Collectors.toMap(Section::getSectionNumber, Function.identity()));
+
+        for (SectionRequest sr : request.sections()) {
+            if (sr.options() == null) continue;
+            Section section = sectionsByNumber.get(sr.id());
+            for (OptionRequest or : sr.options()) {
+                section.addOption(SectionMapper.toEntity(or, sectionsByNumber.get(or.gotoId())));
+            }
+        }
+    }
+
+    @Transactional
+    public List<BookResponse> getBooks(String title, String author, String category, Difficulty difficulty) {
+        //TODO fran: revisit this to see in specifications is better
+        Book probe = new Book();
+        probe.setTitle(title);
+        probe.setAuthor(author);
+        probe.setDifficulty(difficulty);
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.EXACT);
+
+        return bookRepository.findAll(Example.of(probe, matcher)).stream()
+                .filter(book -> category == null || book.getCategories().stream()
+                        .anyMatch(c -> c.getName().equals(category)))
+                .map(BookMapper::toResponse)
+                .toList();
+    }
+
     @Transactional
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
@@ -66,5 +89,4 @@ public class BookService {
         bookRepository.flush();
         bookRepository.delete(book);
     }
-
 }
