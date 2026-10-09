@@ -2,9 +2,9 @@ package com.example.adventure_book.exception;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -13,13 +13,19 @@ import java.util.List;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleValidation(MethodArgumentNotValidException e) {
+    public ProblemDetail handleValidation(MethodArgumentNotValidException e) {
         List<String> errors = e.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .distinct()
                 .sorted()
                 .toList();
-        return String.join(",\n", errors);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Invalid request");
+        problem.setProperty("errors", errors);
+        return problem;
+    }
+
+    @ExceptionHandler({BookNotFoundException.class, SectionNotFoundException.class})
+    public ProblemDetail handleNotFound(RuntimeException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
 }
