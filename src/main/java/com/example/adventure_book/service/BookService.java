@@ -38,6 +38,12 @@ public class BookService {
     }
 
     @Transactional
+    public BookResponse getBookById(Long id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+        return BookMapper.toResponse(book);
+    }
+
+    @Transactional
     public BookResponse createBook(BookRequest bookRequest) {
         Set<Category> categories = categoryService.findOrCreateCategories(bookRequest.categories());
 
@@ -83,10 +89,28 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
         book.getSections().forEach(section -> section.getOptions().clear());
         bookRepository.flush();
         bookRepository.delete(book);
+    }
+
+    @Transactional
+    public BookResponse addCategory(Long id, String name) {
+        Book book = findBook(id);
+        book.addCategory(categoryService.findOrCreateCategory(name));
+        return BookMapper.toResponse(book);
+    }
+
+    @Transactional
+    public BookResponse removeCategory(Long id, String name) {
+        Book book = findBook(id);
+        book.removeCategory(Category.normalize(name));
+        return BookMapper.toResponse(book);
+    }
+
+    private Book findBook(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 }

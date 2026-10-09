@@ -1,6 +1,7 @@
 package com.example.adventure_book.controller;
 
 import com.example.adventure_book.dto.request.BookRequest;
+import com.example.adventure_book.dto.request.CategoryRequest;
 import com.example.adventure_book.dto.response.BookResponse;
 import com.example.adventure_book.service.BookService;
 import com.example.adventure_book.type.Difficulty;
@@ -30,7 +31,12 @@ public class BookController {
         return bookService.getAllBooks();
     }
 
-    @GetMapping("by-example")
+    @GetMapping("{id}")
+    public BookResponse getBookById(@PathVariable Long id) {
+        return bookService.getBookById(id);
+    }
+
+    @GetMapping("search")
     public List<BookResponse> getBooks(@RequestParam(required = false) String title,
                                        @RequestParam(required = false) String author,
                                        @RequestParam(required = false) String category,
@@ -48,5 +54,15 @@ public class BookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
+    }
+
+    @PostMapping("{id}/categories")
+    public BookResponse addCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequest request) {
+        return bookService.addCategory(id, request.name());
+    }
+
+    @DeleteMapping("{id}/categories/{name}")
+    public BookResponse removeCategory(@PathVariable Long id, @PathVariable String name) {
+        return bookService.removeCategory(id, name);
     }
 }

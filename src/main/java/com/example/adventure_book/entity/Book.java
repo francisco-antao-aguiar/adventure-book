@@ -60,7 +60,7 @@ public class Book {
         categories.add(category);
     }
 
-    public void removeCategory(Category category) {
-        categories.remove(category);
+    public void removeCategory(String name) {
+        categories.removeIf(category -> category.getName().equals(name));
     }
 }
