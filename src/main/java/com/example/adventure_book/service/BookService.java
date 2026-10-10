@@ -39,8 +39,19 @@ public class BookService {
 
     @Transactional
     public BookResponse getBookById(Long id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBookById(id);
         return BookMapper.toResponse(book);
+    }
+
+    public void checkBookExists(Long bookId) {
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
+    }
+
+    public Book findBookById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Transactional
@@ -89,7 +100,7 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long id) {
-        Book book = findBook(id);
+        Book book = findBookById(id);
         book.getSections().forEach(section -> section.getOptions().clear());
         bookRepository.flush();
         bookRepository.delete(book);
@@ -97,20 +108,15 @@ public class BookService {
 
     @Transactional
     public BookResponse addCategory(Long id, String name) {
-        Book book = findBook(id);
+        Book book = findBookById(id);
         book.addCategory(categoryService.findOrCreateCategory(name));
         return BookMapper.toResponse(book);
     }
 
     @Transactional
     public BookResponse removeCategory(Long id, String name) {
-        Book book = findBook(id);
+        Book book = findBookById(id);
         book.removeCategory(Category.normalize(name));
         return BookMapper.toResponse(book);
-    }
-
-    private Book findBook(Long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
     }
 }

@@ -2,10 +2,8 @@ package com.example.adventure_book.service;
 
 import com.example.adventure_book.dto.response.SectionResponse;
 import com.example.adventure_book.entity.Section;
-import com.example.adventure_book.exception.BookNotFoundException;
 import com.example.adventure_book.exception.SectionNotFoundException;
 import com.example.adventure_book.mapper.SectionMapper;
-import com.example.adventure_book.repository.BookRepository;
 import com.example.adventure_book.repository.SectionRepository;
 import com.example.adventure_book.type.SectionType;
 import jakarta.transaction.Transactional;
@@ -15,28 +13,29 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SectionService {
-    private final BookRepository bookRepository;
     private final SectionRepository sectionRepository;
+
+    private final BookService bookService;
 
     @Transactional
     public SectionResponse getStartSection(Long bookId) {
-        checkBookExists(bookId);
-        Section section = sectionRepository.findByBookIdAndType(bookId, SectionType.BEGIN)
+        return SectionMapper.toResponse(findStartSection(bookId));
+    }
+
+    public Section findStartSection(Long bookId) {
+        bookService.checkBookExists(bookId);
+        return sectionRepository.findByBookIdAndType(bookId, SectionType.BEGIN)
                 .orElseThrow(() -> new SectionNotFoundException(bookId, null));
-        return SectionMapper.toResponse(section);
     }
 
     @Transactional
     public SectionResponse getSection(Long bookId, Integer sectionNumber) {
-        checkBookExists(bookId);
-        Section section = sectionRepository.findByBookIdAndSectionNumber(bookId, sectionNumber)
-                .orElseThrow(() -> new SectionNotFoundException(bookId, sectionNumber));
-        return SectionMapper.toResponse(section);
+        return SectionMapper.toResponse(findSection(bookId, sectionNumber));
     }
 
-    private void checkBookExists(Long bookId) {
-        if (!bookRepository.existsById(bookId)) {
-            throw new BookNotFoundException(bookId);
-        }
+    public Section findSection(Long bookId, Integer sectionNumber) {
+        bookService.checkBookExists(bookId);
+        return sectionRepository.findByBookIdAndSectionNumber(bookId, sectionNumber)
+                .orElseThrow(() -> new SectionNotFoundException(bookId, sectionNumber));
     }
 }

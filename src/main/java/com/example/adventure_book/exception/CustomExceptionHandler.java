@@ -28,4 +28,9 @@ public class CustomExceptionHandler {
     public ProblemDetail handleNotFound(RuntimeException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
+    @ExceptionHandler(InvalidChoiceException.class)
+    public ProblemDetail handleInvalidChoice(InvalidChoiceException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }
