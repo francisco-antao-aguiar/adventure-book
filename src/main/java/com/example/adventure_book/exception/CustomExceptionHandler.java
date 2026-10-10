@@ -24,7 +24,7 @@ public class CustomExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler({BookNotFoundException.class, SectionNotFoundException.class})
+    @ExceptionHandler({BookNotFoundException.class, SectionNotFoundException.class, GameNotFoundException.class})
     public ProblemDetail handleNotFound(RuntimeException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
@@ -32,5 +32,10 @@ public class CustomExceptionHandler {
     @ExceptionHandler(InvalidChoiceException.class)
     public ProblemDetail handleInvalidChoice(InvalidChoiceException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler({GameFinishedException.class, GameAlreadyStartedException.class})
+    public ProblemDetail handleGameFinished(GameFinishedException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
     }
 }

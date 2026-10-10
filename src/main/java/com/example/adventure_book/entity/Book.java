@@ -51,6 +51,9 @@ public class Book {
     @OrderBy("sectionNumber")
     private List<Section> sections = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    private List<Game> games = new ArrayList<>();
+
     public void addSection(Section section) {
         section.setBook(this);
         sections.add(section);
