@@ -34,8 +34,8 @@ public class CustomExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler({GameFinishedException.class, GameAlreadyStartedException.class})
-    public ProblemDetail handleGameFinished(GameFinishedException e) {
+    @ExceptionHandler(GameAlreadyStartedException.class)
+    public ProblemDetail handleConflict(GameAlreadyStartedException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
     }
 }

@@ -9,7 +9,6 @@ import com.example.adventure_book.entity.Game;
 import com.example.adventure_book.entity.Section;
 import com.example.adventure_book.entity.SectionOption;
 import com.example.adventure_book.exception.GameAlreadyStartedException;
-import com.example.adventure_book.exception.GameFinishedException;
 import com.example.adventure_book.exception.GameNotFoundException;
 import com.example.adventure_book.exception.InvalidChoiceException;
 import com.example.adventure_book.mapper.SectionMapper;
@@ -43,6 +42,7 @@ public class GameService {
         return gameRepository.findByPlayer(player).stream()
                 .map(game ->
                         new GameResponse(
+                                game.getId(),
                                 game.getBook().getId(),
                                 game.getBook().getTitle(),
                                 game.getSectionNumber(),
@@ -55,7 +55,7 @@ public class GameService {
 
     @Transactional
     public PlayResponse getPlayerGame(String player, Long bookId) {
-        Game game = findGame(player, bookId);
+        Game game = findActiveGame(player, bookId);
         Section section = sectionService.findSection(bookId, game.getSectionNumber());
         return new PlayResponse(
                 game.getHealth(),
@@ -66,14 +66,14 @@ public class GameService {
 
     @Transactional
     public PlayResponse startPlayerGame(String player, Long bookId) {
-        if (gameRepository.existsByPlayerAndBookId(player, bookId)) {
+        if (gameRepository.existsByPlayerAndBookIdAndFinishedFalse(player, bookId)) {
             throw new GameAlreadyStartedException(player, bookId);
         }
 
         Book book = bookService.findBookById(bookId);
         Section start = sectionService.findStartSection(bookId);
 
-        Game game = gameRepository.findByPlayerAndBookId(player, bookId).orElseGet(Game::new);
+        Game game = new Game();
         game.setPlayer(player);
         game.setBook(book);
         game.setSectionNumber(start.getSectionNumber());
@@ -99,10 +99,7 @@ public class GameService {
 
     @Transactional
     public PlayResponse playPlayerGame(String player, Long bookId, Long optionId) {
-        Game game = findGame(player, bookId);
-        if (game.isFinished()) {
-            throw new GameFinishedException(player, bookId);
-        }
+        Game game = findActiveGame(player, bookId);
 
         PlayResponse response = move(bookId, game.getSectionNumber(), game.getHealth(), optionId);
 
@@ -147,11 +144,11 @@ public class GameService {
 
     @Transactional
     public void stopPlayerGame(String player, Long bookId) {
-        gameRepository.delete(findGame(player, bookId));
+        gameRepository.delete(findActiveGame(player, bookId));
     }
 
-    private Game findGame(String player, Long bookId) {
-        return gameRepository.findByPlayerAndBookId(player, bookId)
+    private Game findActiveGame(String player, Long bookId) {
+        return gameRepository.findByPlayerAndBookIdAndFinishedFalse(player, bookId)
                 .orElseThrow(() -> new GameNotFoundException(player, bookId));
     }
 }

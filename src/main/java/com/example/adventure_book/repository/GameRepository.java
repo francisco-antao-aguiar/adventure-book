@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
-    Optional<Game> findByPlayerAndBookId(String player, Long bookId);
+    Optional<Game> findByPlayerAndBookIdAndFinishedFalse(String player, Long bookId);
 
-    boolean existsByPlayerAndBookId(String player, Long bookId);
+    boolean existsByPlayerAndBookIdAndFinishedFalse(String player, Long bookId);
 
     List<Game> findByPlayer(String player);
 }

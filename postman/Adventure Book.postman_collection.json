@@ -1,0 +1,605 @@
+{
+  "info": {
+    "_postman_id": "0643f09e-de4b-4da8-b715-4100500d8dff",
+    "name": "Adventure Book",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Books",
+      "item": [
+        {
+          "name": "Add a book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"bookId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Crystal Caverns\",\n  \"author\": \"Evelyn Stormrider\",\n  \"difficulty\": \"EASY\",\n  \"categories\": [\n    \"adventure\",\n    \"fantasy\"\n  ],\n  \"sections\": [\n    {\n      \"id\": 1,\n      \"text\": \"You stand at the entrance of the legendary Crystal Caverns. A cold breeze carries whispers from the darkness below. A broken rope bridge leads into the depths.\",\n      \"type\": \"BEGIN\",\n      \"options\": [\n        {\n          \"description\": \"Cross the rope bridge carefully\",\n          \"gotoId\": 100\n        },\n        {\n          \"description\": \"Search the rocky walls for another path\",\n          \"gotoId\": 20\n        }\n      ]\n    },\n    {\n      \"id\": 20,\n      \"text\": \"Your hands brush against the cold stone until you find a hidden crevice leading downward. It's dark, but you hear faint dripping water.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Enter the crevice\",\n          \"gotoId\": 200,\n          \"consequence\": {\n            \"type\": \"LOSE_HEALTH\",\n            \"value\": \"4\",\n            \"text\": \"You scrape your shoulder squeezing through the narrow gap.\"\n          }\n        },\n        {\n          \"description\": \"Return to the entrance\",\n          \"gotoId\": 1\n        }\n      ]\n    },\n    {\n      \"id\": 100,\n      \"text\": \"The bridge creaks under your weight. Halfway across, a plank snaps beneath your foot!\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Hold on tightly and crawl across\",\n          \"gotoId\": 300\n        },\n        {\n          \"description\": \"Try to jump to the other side\",\n          \"gotoId\": 400,\n          \"consequence\": {\n            \"type\": \"LOSE_HEALTH\",\n            \"value\": \"7\",\n            \"text\": \"You land hard and twist your ankle.\"\n          }\n        }\n      ]\n    },\n    {\n      \"id\": 200,\n      \"text\": \"You emerge into a glittering chamber filled with glowing crystals. At the center lies a pedestal holding an ancient gemstone.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Take the gemstone\",\n          \"gotoId\": 500\n        },\n        {\n          \"description\": \"Inspect the walls carefully\",\n          \"gotoId\": 600\n        }\n      ]\n    },\n    {\n      \"id\": 300,\n      \"text\": \"You crawl to safety on the other side, breathing heavily. A winding path descends deeper into the cavern.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Follow the path downward\",\n          \"gotoId\": 600\n        },\n        {\n          \"description\": \"Rest and recover your strength\",\n          \"gotoId\": 700,\n          \"consequence\": {\n            \"type\": \"GAIN_HEALTH\",\n            \"value\": \"3\",\n            \"text\": \"You feel slightly better after resting.\"\n          }\n        }\n      ]\n    },\n    {\n      \"id\": 400,\n      \"text\": \"You barely make the jump, but the rope bridge collapses behind you. There's no turning back now.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Continue deeper into the cavern\",\n          \"gotoId\": 600\n        }\n      ]\n    },\n    {\n      \"id\": 500,\n      \"text\": \"The moment you touch the gemstone, the chamber begins to shake violently. A secret door opens to reveal a hidden passage.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Enter the hidden passage\",\n          \"gotoId\": 800\n        },\n        {\n          \"description\": \"Drop the gemstone and run back\",\n          \"gotoId\": 200\n        }\n      ]\n    },\n    {\n      \"id\": 600,\n      \"text\": \"You reach a vast underground lake glowing with bioluminescent crystals. A small boat waits at the shore.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Take the boat across the lake\",\n          \"gotoId\": 900\n        },\n        {\n          \"description\": \"Swim across\",\n          \"gotoId\": 1000,\n          \"consequence\": {\n            \"type\": \"LOSE_HEALTH\",\n            \"value\": \"5\",\n            \"text\": \"The freezing water chills you to the bone.\"\n          }\n        }\n      ]\n    },\n    {\n      \"id\": 700,\n      \"text\": \"After a short rest, you feel strong enough to continue your journey.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Head toward the underground lake\",\n          \"gotoId\": 600\n        }\n      ]\n    },\n    {\n      \"id\": 800,\n      \"text\": \"The hidden passage leads to a giant crystal throne room, where an ancient spirit awaits.\",\n      \"type\": \"END\"\n    },\n    {\n      \"id\": 900,\n      \"text\": \"The boat carries you safely across, but you sense something massive moving in the depths below.\",\n      \"type\": \"NODE\",\n      \"options\": [\n        {\n          \"description\": \"Ignore it and continue forward\",\n          \"gotoId\": 800\n        }\n      ]\n    },\n    {\n      \"id\": 1000,\n      \"text\": \"You manage to swim across, shivering but alive. The glowing crystals ahead light your way to a massive door.\",\n      \"type\": \"END\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/book",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List all books",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search by author",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/search?author=Evelyn Stormrider",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "author",
+                  "value": "Evelyn Stormrider"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search by difficulty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/search?difficulty=EASY",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "difficulty",
+                  "value": "EASY"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search by category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/search?category=FANTASY",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "FANTASY"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Book details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Categories",
+      "item": [
+        {
+          "name": "Add category to book",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"mystery\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove category from book",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}/categories/fantasy",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}",
+                "categories",
+                "fantasy"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List all categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Read the book",
+      "item": [
+        {
+          "name": "First section",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}/sections/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}",
+                "sections",
+                "start"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Go to section 100",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}/sections/100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}",
+                "sections",
+                "100"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Play without a player",
+      "item": [
+        {
+          "name": "Start",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.section) {",
+                  "    pm.collectionVariables.set(\"sectionNumber\", res.section.sectionNumber);",
+                  "    pm.collectionVariables.set(\"health\", res.health);",
+                  "    if (res.section.options.length > 0) {",
+                  "        pm.collectionVariables.set(\"optionId\", res.section.options[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}/play/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}",
+                "play",
+                "start"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Make a move (repeat)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.section) {",
+                  "    pm.collectionVariables.set(\"sectionNumber\", res.section.sectionNumber);",
+                  "    pm.collectionVariables.set(\"health\", res.health);",
+                  "    if (res.section.options.length > 0) {",
+                  "        pm.collectionVariables.set(\"optionId\", res.section.options[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionNumber\": {{sectionNumber}},\n  \"health\": {{health}},\n  \"optionId\": {{optionId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}/play",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}",
+                "play"
+              ]
+            },
+            "description": "Sends the state from the last response. optionId is set to the first option of the current section; change it to pick another option."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Play as a player",
+      "item": [
+        {
+          "name": "Start game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.section) {",
+                  "    pm.collectionVariables.set(\"sectionNumber\", res.section.sectionNumber);",
+                  "    pm.collectionVariables.set(\"health\", res.health);",
+                  "    if (res.section.options.length > 0) {",
+                  "        pm.collectionVariables.set(\"optionId\", res.section.options[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/players/{{player}}/book/{{bookId}}/play/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "players",
+                "{{player}}",
+                "book",
+                "{{bookId}}",
+                "play",
+                "start"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Current game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.section) {",
+                  "    pm.collectionVariables.set(\"sectionNumber\", res.section.sectionNumber);",
+                  "    pm.collectionVariables.set(\"health\", res.health);",
+                  "    if (res.section.options.length > 0) {",
+                  "        pm.collectionVariables.set(\"optionId\", res.section.options[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/players/{{player}}/book/{{bookId}}/play",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "players",
+                "{{player}}",
+                "book",
+                "{{bookId}}",
+                "play"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Make a move (repeat)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.section) {",
+                  "    pm.collectionVariables.set(\"sectionNumber\", res.section.sectionNumber);",
+                  "    pm.collectionVariables.set(\"health\", res.health);",
+                  "    if (res.section.options.length > 0) {",
+                  "        pm.collectionVariables.set(\"optionId\", res.section.options[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"optionId\": {{optionId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/players/{{player}}/book/{{bookId}}/play",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "players",
+                "{{player}}",
+                "book",
+                "{{bookId}}",
+                "play"
+              ]
+            },
+            "description": "optionId is set to the first option of the current section; change it to pick another option."
+          },
+          "response": []
+        },
+        {
+          "name": "My games",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/players/{{player}}/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "players",
+                "{{player}}",
+                "games"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stop game",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/players/{{player}}/book/{{bookId}}/play",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "players",
+                "{{player}}",
+                "book",
+                "{{bookId}}",
+                "play"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Clean up",
+      "item": [
+        {
+          "name": "Delete book",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/book/{{bookId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "book",
+                "{{bookId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "bookId",
+      "value": "1"
+    },
+    {
+      "key": "player",
+      "value": "ana"
+    },
+    {
+      "key": "sectionNumber",
+      "value": "1"
+    },
+    {
+      "key": "health",
+      "value": "10"
+    },
+    {
+      "key": "optionId",
+      "value": "1"
+    }
+  ]
+}
